@@ -1,0 +1,5 @@
+requests
+PyGithub
+Flask
+python-dotenv
+gunicorn
