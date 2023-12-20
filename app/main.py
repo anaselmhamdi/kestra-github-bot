@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 APP_ID = os.environ["APP_ID"]
-KESTRA_API_URL = os.environ["KESTRA_API_URL"]
+KESTRA_SERVICE_URL = os.environ["KESTRA_SERVICE_URL"]
 
 with open(
         os.path.normpath(os.path.expanduser('./bot-cert.pem')),
@@ -27,8 +27,13 @@ git_integration = GithubIntegration(
 
 
 def get_kestra_flow_execution(execution_id):
-    response = requests.get(f"{KESTRA_API_URL}/api/v1/executions/{execution_id}")
+    response = requests.get(f"{KESTRA_SERVICE_URL}/api/v1/executions/{execution_id}")
     return response.json()
+
+
+@app.route("/health", methods=['GET'])
+def health():
+    return "ok"
 
 
 @app.route("/", methods=['POST'])
@@ -62,7 +67,7 @@ def bot():
     )
 
     # Call Kestra API to get the repo's CI flow (the name should be exactly ci-{repo_name})
-    response = requests.get(f"{KESTRA_API_URL}/api/v1/flows/search", params={"q": f"ci-{repo_name}"})
+    response = requests.get(f"{KESTRA_SERVICE_URL}/api/v1/flows/search", params={"q": f"ci-{repo_name}"})
 
     flow = response.json()['results'][0]
     flow_id = flow['id']
@@ -70,7 +75,10 @@ def bot():
     key = flow['triggers'][0]['key']
 
     # Execute the flow
-    response = requests.post(f"{KESTRA_API_URL}/api/v1/executions/webhook/{namespace}/{flow_id}/{key}", json=payload)
+    response = requests.post(
+        f"{KESTRA_SERVICE_URL}/api/v1/executions/webhook/{namespace}/{flow_id}/{key}",
+        json=payload
+    )
     if response.status_code != 200:
         main_check_run.edit(
             name=f"Kestra flow {flow_id}: {flow['flowId']} ",

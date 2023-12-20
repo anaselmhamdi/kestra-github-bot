@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kestra-github-bot.labels" . | nindent 4 }}
+    namespace: {{ .Values.namespace | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "kestra-github-bot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kestra-github-bot.labels" . | nindent 8 }}
+    spec:
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.appName }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: KESTRA_SERVICE_URL
+            value: "{{ .Values.kestraServiceUrl }}"
+          - name: APP_ID
+            value: "{{ .Values.githubAppId }}"
+          - name: PORT
+            value: "{{ .Values.port }}"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        ports:
+        - containerPort: {{ .Values.port }}
+      volumes:
+        - name: {{ .Values.appName }}-secrets
+          secret:
+            secretName: {{ .Values.appName }}-secrets
+            defaultMode: 420

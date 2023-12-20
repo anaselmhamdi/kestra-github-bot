@@ -9,7 +9,7 @@ RUN pip install -r requirements.txt
 
 # Set environment variables
 ENV APP_ID 717113
-ENV KESTRA_API_URL http://host.docker.internal:8080
+ENV KESTRA_SERVICE_URL http://host.docker.internal:8080
 ENV PORT 5000
 
 
