@@ -31,6 +31,8 @@ spec:
             value: "{{ .Values.githubAppId }}"
           - name: PORT
             value: "{{ .Values.port }}"
+          - name: CHECK_TIMEOUT
+            value: "{{ .Values.checkTimeout }}"
         livenessProbe:
           httpGet:
             path: /health

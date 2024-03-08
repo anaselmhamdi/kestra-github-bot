@@ -11,6 +11,7 @@ RUN pip install -r requirements.txt
 ENV APP_ID 717113
 ENV KESTRA_SERVICE_URL http://host.docker.internal:8080
 ENV PORT 5000
+ENV CHECK_TIMEOUT 600
 
 
 ENV APP_HOME /app

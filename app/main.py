@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 APP_ID = os.environ["APP_ID"]
 KESTRA_SERVICE_URL = os.environ["KESTRA_SERVICE_URL"]
+TIMEOUT = os.environ.get("CHECK_TIMEOUT", 600)
 
 with open(
         os.path.normpath(os.path.expanduser('./bot-cert.pem')),
@@ -91,6 +92,7 @@ def bot():
     execution_id = response.json()['id']
     main_check_run.edit(
         status="in_progress",
+        details_url=f"{KESTRA_SERVICE_URL}/ui/executions/{namespace}/{flow_id}/{execution_id}/logs",
     )
 
     # Create check runs for subflows
@@ -102,14 +104,15 @@ def bot():
             head_sha=payload['pull_request']['head']['sha'],
             status="in_progress",
             started_at=datetime.now(),
+            details_url=f"{KESTRA_SERVICE_URL}/ui/executions/{namespace}/{flow_id}/{execution_id}/logs"
         )
         subflow_runs[subflow] = check_run
 
     # Check and update status of CI Flow
     execution_data = get_kestra_flow_execution(execution_id)
     main_flow_status = execution_data['state']['current']
+    start_time = time.time()
     while main_flow_status == "RUNNING":
-        time.sleep(3)
         execution_data = get_kestra_flow_execution(execution_id)
         for task in execution_data["taskRunList"]:
             if task["taskId"] in subflow_runs:
@@ -130,6 +133,16 @@ def bot():
                     )
         execution_data = get_kestra_flow_execution(execution_id)
         main_flow_status = execution_data['state']['current']
+
+        # Check if the timeout is reached
+        if time.time() - start_time > TIMEOUT:
+            main_check_run.edit(
+                status="completed",
+                conclusion="timed_out",
+                completed_at=datetime.now(),
+                output={"title": "Timeout reached", "summary": f"Timeout of {TIMEOUT} seconds reached. Exiting."}
+            )
+            return "failure"
 
     if main_flow_status == "SUCCESS":
         for task in execution_data["taskRunList"]:
