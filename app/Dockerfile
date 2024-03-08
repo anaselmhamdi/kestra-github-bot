@@ -11,6 +11,7 @@ RUN pip install -r requirements.txt
 ENV APP_ID 717113
 ENV KESTRA_SERVICE_URL http://host.docker.internal:8080
 ENV PORT 5000
+ENV CHECK_TIMEOUT 600
 
 
 ENV APP_HOME /app
@@ -19,4 +20,4 @@ COPY . ${APP_HOME}
 
 CMD exec gunicorn --bind :$PORT --timeout 0 main:app
 
-LABEL version=0.1.0
+LABEL version=0.1.2

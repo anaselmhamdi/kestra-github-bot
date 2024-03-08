@@ -7,6 +7,7 @@ image:
   tag: "latest"
   pullPolicy: "Always"
 kestraServiceUrl: http://kestra-service.kestra:8080
+checkTimeout: 600 # in seconds
 port: 5000
 nodeSelector: {}
 service:
