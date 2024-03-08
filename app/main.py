@@ -85,14 +85,16 @@ def bot():
             name=f"Kestra flow {flow_id}: {flow['flowId']} ",
             status="error",
             conclusion="failure",
+            output={"title": "Failure to execute Kestra flow", "summary": f"Response: {response.text}"},
             completed_at=datetime.now(),
         )
         return "Failure to execute Kestra flow"
 
     execution_id = response.json()['id']
+    details_url = f"{KESTRA_SERVICE_URL}/ui/executions/{namespace}/{flow_id}/{execution_id}/logs"
     main_check_run.edit(
         status="in_progress",
-        details_url=f"{KESTRA_SERVICE_URL}/ui/executions/{namespace}/{flow_id}/{execution_id}/logs",
+        details_url=details_url,
     )
 
     # Create check runs for subflows

@@ -1,2 +1,3 @@
 .DS_Store
-update_chart.sh
+update_chart_deploy.sh
+bot-cert.pem

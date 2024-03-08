@@ -20,4 +20,4 @@ COPY . ${APP_HOME}
 
 CMD exec gunicorn --bind :$PORT --timeout 0 main:app
 
-LABEL version=0.1.0
+LABEL version=0.1.2
