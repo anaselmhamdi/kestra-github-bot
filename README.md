@@ -1,9 +1,9 @@
 # kestra-github-bot
 
-Source code for the Kestra bot Github app.
-The app is meant to be deployed on a cluster serving Kestra.
-The app listens to pull requests events and runs the `ci-{repo_name}` Kestra flow.
-**The flow also needs to have a webhook trigger** for it to be run by the bot.
+Source code for the Kestra bot Github app.  
+The app is meant to be deployed on a cluster serving Kestra.  
+The app listens to pull requests events and runs the `ci-{repo_name}` Kestra flow.  
+**The flow also needs to have a webhook trigger** for it to be run by the bot.  
 It runs checks for the whole flow and every subflow.
 
 ## Installation
