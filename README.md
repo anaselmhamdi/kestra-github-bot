@@ -13,3 +13,16 @@ It runs checks for the whole flow and every subflow.
 - Define a host to use for your webhook or use smee.io locally for testing
 - Save the changes
 - Install the app on your repository after deploying the app
+
+## Building features
+
+- Install smee `npm i -g smee-client`
+- Go on smee.io and create a new channel
+- Run `smee -u https://smee.io/your-channel -p PORT` where port is the port used by the Kestra bot
+- Use the smee webhook as the webhook for your Github app installation
+- Edit the files in the app/ folder to add your features
+- Build your Docker and run it.
+
+## Deployment
+
+- Package the charts in the charts/ folder and deploy them on your cluster with Helm
