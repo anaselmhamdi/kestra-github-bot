@@ -24,6 +24,10 @@ spec:
       - name: {{ .Values.appName }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
         env:
           - name: KESTRA_SERVICE_URL
             value: "{{ .Values.kestraServiceUrl }}"
@@ -33,6 +37,8 @@ spec:
             value: "{{ .Values.port }}"
           - name: CHECK_TIMEOUT
             value: "{{ .Values.checkTimeout }}"
+          - name: KESTRA_WEBAPP_URL
+            value: "{{ .Values.kestraWebappUrl }}"
         livenessProbe:
           httpGet:
             path: /health

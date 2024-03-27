@@ -1,5 +1,7 @@
 requests
 PyGithub
-Flask
 python-dotenv
-gunicorn
+uvicorn
+sseclient-py
+fastapi
+PyYAML

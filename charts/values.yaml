@@ -1,12 +1,13 @@
 appName: "kestra-github-bot"
 replicas: 1
-githubAppId: 717113
+githubAppId: 717113 # your github app id
 githubAppCertificateKey: "" # base64 encoded string of your github app certificate
 image:
   repository: "anaselmhamdi/kestra-github-bot"
-  tag: "latest"
+  tag: "0.3.24"
   pullPolicy: "Always"
 kestraServiceUrl: http://kestra-service.kestra:8080
+kestraWebappUrl: "https://kestra.mydomain.io"
 checkTimeout: 600 # in seconds
 port: 5000
 nodeSelector: {}
